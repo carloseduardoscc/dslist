@@ -3,6 +3,7 @@ package com.carlos.dslist.services;
 import com.carlos.dslist.DTO.GameDTO;
 import com.carlos.dslist.DTO.GameMinDTO;
 import com.carlos.dslist.entities.Game;
+import com.carlos.dslist.projections.GameMinProjection;
 import com.carlos.dslist.repositories.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,14 @@ public class GameService {
     public GameDTO findById(Long id){ // Tratamento de exceção caso não encontre
         Game result = gameRepository.findById(id).get();
         return new GameDTO(result);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GameMinDTO> findByList(Long listId){ // Tratamento de exceção caso não encontre
+        List<GameMinProjection> result = gameRepository.searchByList(listId);
+        return result.stream()
+                .map(g -> new GameMinDTO(g))
+                .toList();
     }
 
 }
